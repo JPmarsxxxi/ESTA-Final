@@ -10,6 +10,15 @@ import logging
 from typing import Dict, List, Any
 from datetime import datetime
 
+# Import real workers
+try:
+    from scriptwriter import ScriptWriter as RealScriptWriter
+    REAL_SCRIPTWRITER_AVAILABLE = True
+    logger.info("Real ScriptWriter imported successfully")
+except ImportError as e:
+    REAL_SCRIPTWRITER_AVAILABLE = False
+    logger.warning(f"Real ScriptWriter not available: {e}")
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -443,8 +452,9 @@ class WorkerFactory:
             ValueError: If tool name is not recognized
         """
         if tool_name not in cls._instances:
+            # Use real implementations when available, otherwise fall back to mocks
             worker_map = {
-                "scriptwriter": MockScriptWriter,
+                "scriptwriter": RealScriptWriter if REAL_SCRIPTWRITER_AVAILABLE else MockScriptWriter,
                 "audio_agent": MockAudioAgent,
                 "langsearch": MockLangSearch,
                 "brainbox": MockBrainBox,
@@ -456,7 +466,8 @@ class WorkerFactory:
                 raise ValueError(f"Unknown tool: {tool_name}. Available: {list(worker_map.keys())}")
 
             cls._instances[tool_name] = worker_map[tool_name]()
-            logger.info(f"Created new worker instance: {tool_name}")
+            worker_type = "REAL" if (tool_name == "scriptwriter" and REAL_SCRIPTWRITER_AVAILABLE) else "MOCK"
+            logger.info(f"Created new worker instance: {tool_name} ({worker_type})")
 
         return cls._instances[tool_name]
 
