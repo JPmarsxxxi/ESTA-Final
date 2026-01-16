@@ -23,6 +23,14 @@ except ImportError as e:
     REAL_SCRIPTWRITER_AVAILABLE = False
     logger.warning(f"⚠️  Real ScriptWriter not available: {e}")
 
+try:
+    from audio_agent import AudioAgent as RealAudioAgent
+    REAL_AUDIOAGENT_AVAILABLE = True
+    logger.info("✅ Real AudioAgent imported successfully")
+except ImportError as e:
+    REAL_AUDIOAGENT_AVAILABLE = False
+    logger.warning(f"⚠️  Real AudioAgent not available: {e}")
+
 
 # Tool Registry - Defines all available workers and their specifications
 AVAILABLE_TOOLS = {
@@ -455,7 +463,7 @@ class WorkerFactory:
             # Use real implementations when available, otherwise fall back to mocks
             worker_map = {
                 "scriptwriter": RealScriptWriter if REAL_SCRIPTWRITER_AVAILABLE else MockScriptWriter,
-                "audio_agent": MockAudioAgent,
+                "audio_agent": RealAudioAgent if REAL_AUDIOAGENT_AVAILABLE else MockAudioAgent,
                 "langsearch": MockLangSearch,
                 "brainbox": MockBrainBox,
                 "asset_collector": MockAssetCollector,
@@ -466,7 +474,13 @@ class WorkerFactory:
                 raise ValueError(f"Unknown tool: {tool_name}. Available: {list(worker_map.keys())}")
 
             cls._instances[tool_name] = worker_map[tool_name]()
-            worker_type = "REAL" if (tool_name == "scriptwriter" and REAL_SCRIPTWRITER_AVAILABLE) else "MOCK"
+
+            # Determine worker type
+            is_real = (
+                (tool_name == "scriptwriter" and REAL_SCRIPTWRITER_AVAILABLE) or
+                (tool_name == "audio_agent" and REAL_AUDIOAGENT_AVAILABLE)
+            )
+            worker_type = "REAL" if is_real else "MOCK"
             logger.info(f"Created new worker instance: {tool_name} ({worker_type})")
 
         return cls._instances[tool_name]
