@@ -265,14 +265,22 @@ class Secretary:
             if len(style) < 3:
                 errors.append("Custom style must be at least 3 characters")
 
-        # Validate duration
+        # Validate duration (with smart parsing)
         duration = inputs.get('duration_range', '').strip()
         if not duration:
             errors.append("Duration is required")
-        elif not self.DURATION_PATTERN.match(duration):
-            errors.append(
-                "Duration format invalid. Expected format: 'X-Y minutes/seconds' or 'X minutes/seconds'"
-            )
+        else:
+            # Try to parse and normalize duration
+            normalized_duration = self._normalize_duration(duration)
+            if normalized_duration:
+                # Update the input with normalized version
+                inputs['duration_range'] = normalized_duration
+                logger.info(f"Duration normalized: '{duration}' → '{normalized_duration}'")
+            else:
+                errors.append(
+                    f"Duration format invalid. Could not parse '{duration}'. "
+                    "Examples: '5 minutes', '2-3 minutes', 'like 30 seconds', 'around 1-2 mins'"
+                )
 
         # Validate audio mode (case-insensitive but no whitespace allowed)
         audio_mode_raw = inputs.get('audio_mode', '')
@@ -296,6 +304,63 @@ class Secretary:
         logger.info(f"Validation result: {'PASS' if is_valid else 'FAIL'} ({len(errors)} errors)")
 
         return is_valid, errors
+
+    def _normalize_duration(self, duration: str) -> Optional[str]:
+        """
+        Parse and normalize duration from natural language
+
+        Handles inputs like:
+        - "like 15 seconds" → "15 seconds"
+        - "around 2-3 minutes" → "2-3 minutes"
+        - "about 5 mins" → "5 minutes"
+        - "roughly 30-60 secs" → "30-60 seconds"
+        - "maybe 2 minutes" → "2 minutes"
+
+        Args:
+            duration: User input duration string
+
+        Returns:
+            Normalized duration string or None if invalid
+        """
+        if not duration:
+            return None
+
+        # Remove filler words
+        filler_words = [
+            'like', 'around', 'about', 'roughly', 'maybe', 'approximately',
+            'approx', 'nearly', 'almost', 'close to', 'just', 'only'
+        ]
+
+        cleaned = duration.lower()
+        for filler in filler_words:
+            cleaned = cleaned.replace(filler, '')
+
+        cleaned = cleaned.strip()
+
+        # Extract number(s) and unit
+        # Pattern: captures "5" or "2-3" followed by "minutes/mins/min/seconds/secs/sec"
+        pattern = r'(\d+(?:-\d+)?)\s*(minute|minutes|min|mins|second|seconds|sec|secs)'
+        match = re.search(pattern, cleaned, re.IGNORECASE)
+
+        if match:
+            number_part = match.group(1)  # "5" or "2-3"
+            unit_part = match.group(2).lower()  # "minutes", "mins", etc.
+
+            # Normalize unit to full form
+            if unit_part in ['minute', 'minutes', 'min', 'mins']:
+                unit = 'minutes' if '-' in number_part or int(number_part.split('-')[0]) != 1 else 'minute'
+            elif unit_part in ['second', 'seconds', 'sec', 'secs']:
+                unit = 'seconds' if '-' in number_part or int(number_part.split('-')[0]) != 1 else 'second'
+            else:
+                return None
+
+            normalized = f"{number_part} {unit}"
+
+            # Final validation against strict pattern
+            if self.DURATION_PATTERN.match(normalized):
+                return normalized
+
+        return None
 
     def collect_requirements(self, interactive: bool = True) -> Dict[str, Any]:
         """
