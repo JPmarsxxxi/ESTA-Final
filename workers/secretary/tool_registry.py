@@ -10,18 +10,18 @@ import logging
 from typing import Dict, List, Any
 from datetime import datetime
 
+# Configure logging FIRST
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Import real workers
 try:
     from scriptwriter import ScriptWriter as RealScriptWriter
     REAL_SCRIPTWRITER_AVAILABLE = True
-    logger.info("Real ScriptWriter imported successfully")
+    logger.info("✅ Real ScriptWriter imported successfully")
 except ImportError as e:
     REAL_SCRIPTWRITER_AVAILABLE = False
-    logger.warning(f"Real ScriptWriter not available: {e}")
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+    logger.warning(f"⚠️  Real ScriptWriter not available: {e}")
 
 
 # Tool Registry - Defines all available workers and their specifications
