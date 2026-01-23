@@ -9,7 +9,7 @@ Run the Secretary module locally on your machine with Jupyter Notebook.
 ```cmd
 cd workers\secretary
 
-REM 1. Setup environment (creates venv, installs dependencies)
+REM 1. Setup environment (creates esta, installs dependencies)
 setup_local_env.bat
 
 REM 2. Install Ollama for Windows
@@ -20,7 +20,7 @@ REM 3. Pull Mistral model (Ollama starts automatically on Windows)
 ollama pull mistral
 
 REM 4. Activate environment (when starting new terminal)
-venv\Scripts\activate.bat
+esta\Scripts\activate.bat
 
 REM 5. Start Jupyter
 jupyter notebook
@@ -33,11 +33,11 @@ REM 6. Open test_secretary_local.ipynb
 ```bash
 cd workers/secretary
 
-# 1. Setup environment (creates venv, installs dependencies)
+# 1. Setup environment (creates esta, installs dependencies)
 ./setup_local_env.sh
 
 # 2. Activate environment
-source venv/bin/activate
+source esta/bin/activate
 
 # 3. Install Ollama (if not installed)
 curl -fsSL https://ollama.com/install.sh | sh
@@ -70,7 +70,7 @@ jupyter notebook
 
 ```
 workers/secretary/
-├── venv/                          # Virtual environment (created by setup script)
+├── esta/                          # Virtual environment (created by setup script)
 ├── setup_local_env.bat            # One-command setup (Windows)
 ├── setup_local_env.sh             # One-command setup (Linux/Mac)
 ├── test_secretary_local.ipynb     # Interactive testing notebook
@@ -126,16 +126,16 @@ Pull the model:
 ollama pull mistral
 ```
 
-### "Not in venv"
+### "Not in esta"
 
 **Windows:**
 ```cmd
-venv\Scripts\activate.bat
+esta\Scripts\activate.bat
 ```
 
 **Linux/Mac:**
 ```bash
-source venv/bin/activate
+source esta/bin/activate
 ```
 
 ### "ScriptWriter: MOCK"
@@ -182,13 +182,13 @@ To completely reset the environment:
 
 **Windows:**
 ```cmd
-rmdir /s /q venv audio_outputs
+rmdir /s /q esta audio_outputs
 setup_local_env.bat
 ```
 
 **Linux/Mac:**
 ```bash
-rm -rf venv audio_outputs
+rm -rf esta audio_outputs
 ./setup_local_env.sh
 ```
 

@@ -20,17 +20,17 @@ if %errorlevel% neq 0 (
 echo [OK] Python found
 python --version
 
-REM Check if venv exists
-if exist "venv\" (
+REM Check if esta exists
+if exist "esta\" (
     echo.
     echo [WARNING] Virtual environment already exists.
     set /p recreate="Remove and recreate? (y/n): "
     if /i "%recreate%"=="y" (
-        echo Removing existing venv...
-        rmdir /s /q venv
+        echo Removing existing esta...
+        rmdir /s /q esta
     ) else (
-        echo Using existing venv...
-        call venv\Scripts\activate.bat
+        echo Using existing esta...
+        call esta\Scripts\activate.bat
         echo [OK] Virtual environment activated
         goto :end
     )
@@ -38,7 +38,7 @@ if exist "venv\" (
 
 echo.
 echo [STEP 1/5] Creating virtual environment...
-python -m venv venv
+python -m esta esta
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to create virtual environment
     pause
@@ -48,7 +48,7 @@ echo [OK] Virtual environment created
 
 echo.
 echo [STEP 2/5] Activating virtual environment...
-call venv\Scripts\activate.bat
+call esta\Scripts\activate.bat
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to activate virtual environment
     pause
@@ -98,7 +98,7 @@ echo 3. Pull Mistral model (run in new terminal):
 echo    ollama pull mistral
 echo.
 echo 4. Activate environment (whenever you start new terminal):
-echo    venv\Scripts\activate.bat
+echo    esta\Scripts\activate.bat
 echo.
 echo 5. Start Jupyter:
 echo    jupyter notebook
