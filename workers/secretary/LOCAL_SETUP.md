@@ -4,14 +4,40 @@ Run the Secretary module locally on your machine with Jupyter Notebook.
 
 ## Quick Start
 
+### Windows
+
+```cmd
+cd workers\secretary
+
+REM 1. Setup environment (creates esta, installs dependencies)
+setup_local_env.bat
+
+REM 2. Install Ollama for Windows
+REM Download from: https://ollama.com/download/windows
+REM Or: winget install Ollama.Ollama
+
+REM 3. Pull Mistral model (Ollama starts automatically on Windows)
+ollama pull mistral
+
+REM 4. Activate environment (when starting new terminal)
+esta\Scripts\activate.bat
+
+REM 5. Start Jupyter
+jupyter notebook
+
+REM 6. Open test_secretary_local.ipynb
+```
+
+### Linux / Mac
+
 ```bash
 cd workers/secretary
 
-# 1. Setup environment (creates venv, installs dependencies)
+# 1. Setup environment (creates esta, installs dependencies)
 ./setup_local_env.sh
 
 # 2. Activate environment
-source venv/bin/activate
+source esta/bin/activate
 
 # 3. Install Ollama (if not installed)
 curl -fsSL https://ollama.com/install.sh | sh
@@ -44,8 +70,9 @@ jupyter notebook
 
 ```
 workers/secretary/
-├── venv/                          # Virtual environment (created by setup script)
-├── setup_local_env.sh             # One-command setup
+├── esta/                          # Virtual environment (created by setup script)
+├── setup_local_env.bat            # One-command setup (Windows)
+├── setup_local_env.sh             # One-command setup (Linux/Mac)
 ├── test_secretary_local.ipynb     # Interactive testing notebook
 ├── secretary.py                   # Main orchestrator
 ├── tool_registry.py               # Worker registry
@@ -85,7 +112,10 @@ The notebook will auto-detect your GPU and use it if available.
 ## Troubleshooting
 
 ### "Ollama: Not running"
-Start Ollama in a separate terminal:
+
+**Windows:** Check system tray for Ollama icon. If not running, start from Start menu.
+
+**Linux/Mac:** Start in a separate terminal:
 ```bash
 ollama serve
 ```
@@ -96,10 +126,16 @@ Pull the model:
 ollama pull mistral
 ```
 
-### "Not in venv"
-Activate the environment:
+### "Not in esta"
+
+**Windows:**
+```cmd
+esta\Scripts\activate.bat
+```
+
+**Linux/Mac:**
 ```bash
-source venv/bin/activate
+source esta/bin/activate
 ```
 
 ### "ScriptWriter: MOCK"
@@ -112,7 +148,13 @@ pip install TTS openai-whisper
 ```
 
 ### GPU not detected but you have one
-Install CUDA drivers and PyTorch with CUDA:
+
+**Windows:** Install CUDA toolkit from NVIDIA, then:
+```cmd
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+```
+
+**Linux:** Install CUDA drivers and PyTorch with CUDA:
 ```bash
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
@@ -137,8 +179,16 @@ Each worker will be built and tested incrementally in the notebook.
 ## Clean Restart
 
 To completely reset the environment:
+
+**Windows:**
+```cmd
+rmdir /s /q esta audio_outputs
+setup_local_env.bat
+```
+
+**Linux/Mac:**
 ```bash
-rm -rf venv audio_outputs
+rm -rf esta audio_outputs
 ./setup_local_env.sh
 ```
 

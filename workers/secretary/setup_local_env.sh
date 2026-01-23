@@ -12,25 +12,25 @@ python_version=$(python3 --version | cut -d' ' -f2)
 echo "✓ Python version: $python_version"
 
 # Create virtual environment
-if [ -d "venv" ]; then
-    echo "⚠️  Virtual environment already exists. Remove 'venv' folder to recreate."
+if [ -d "esta" ]; then
+    echo "⚠️  Virtual environment already exists. Remove 'esta' folder to recreate."
     read -p "Do you want to remove and recreate? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        rm -rf venv
+        rm -rf esta
     else
-        echo "Using existing venv..."
-        source venv/bin/activate
+        echo "Using existing esta..."
+        source esta/bin/activate
         echo "✓ Activated existing virtual environment"
         exit 0
     fi
 fi
 
 echo "📦 Creating virtual environment..."
-python3 -m venv venv
+python3 -m esta esta
 
 echo "✓ Activating virtual environment..."
-source venv/bin/activate
+source esta/bin/activate
 
 echo "📥 Installing base dependencies..."
 pip install --upgrade pip setuptools wheel
@@ -58,7 +58,7 @@ echo "3. Pull Mistral model (in another terminal):"
 echo "   ollama pull mistral"
 echo ""
 echo "4. Activate the environment:"
-echo "   source venv/bin/activate"
+echo "   source esta/bin/activate"
 echo ""
 echo "5. Start Jupyter:"
 echo "   jupyter notebook"
