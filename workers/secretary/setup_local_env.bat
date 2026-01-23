@@ -38,7 +38,7 @@ if exist "esta\" (
 
 echo.
 echo [STEP 1/5] Creating virtual environment...
-python -m esta esta
+python -m venv esta
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to create virtual environment
     pause

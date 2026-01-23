@@ -27,7 +27,7 @@ if [ -d "esta" ]; then
 fi
 
 echo "📦 Creating virtual environment..."
-python3 -m esta esta
+python3 -m venv esta
 
 echo "✓ Activating virtual environment..."
 source esta/bin/activate
