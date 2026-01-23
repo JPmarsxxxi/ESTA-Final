@@ -11,6 +11,24 @@ echo "🚀 Setting up Secretary Module local environment..."
 python_version=$(python3 --version | cut -d' ' -f2)
 echo "✓ Python version: $python_version"
 
+# Check if Python 3.13+ (TTS requires 3.11 or 3.12)
+python_minor=$(echo $python_version | cut -d'.' -f2)
+if [ "$python_minor" -ge 13 ]; then
+    echo ""
+    echo "⚠️  WARNING: Python 3.13+ detected!"
+    echo "TTS library requires Python 3.11 or 3.12."
+    echo ""
+    echo "RECOMMENDED: Use setup_conda_env.sh instead"
+    echo "This will create an environment with Python 3.11."
+    echo ""
+    read -p "Continue anyway? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Setup cancelled."
+        exit 0
+    fi
+fi
+
 # Create virtual environment
 if [ -d "esta" ]; then
     echo "⚠️  Virtual environment already exists. Remove 'esta' folder to recreate."

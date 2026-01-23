@@ -2,7 +2,40 @@
 
 Run the Secretary module locally on your machine with Jupyter Notebook.
 
+## Important: Python Version Compatibility
+
+**TTS (Coqui TTS) requires Python 3.11 or 3.12.** It does NOT support Python 3.13+.
+
+### If you have Anaconda/Miniconda (RECOMMENDED):
+Use `setup_conda_env.bat` (Windows) or `setup_conda_env.sh` (Linux/Mac) to create an environment with Python 3.11.
+
+### If you have standalone Python:
+- **Python 3.11 or 3.12**: Use `setup_local_env.bat` / `setup_local_env.sh`
+- **Python 3.13+**: You must install Python 3.11 or 3.12 first, or use Conda
+
 ## Quick Start
+
+### Option A: Conda Setup (Recommended for Anaconda users)
+
+**Windows:**
+```cmd
+cd workers\secretary
+setup_conda_env.bat
+conda activate esta
+ollama pull mistral
+jupyter notebook
+```
+
+**Linux/Mac:**
+```bash
+cd workers/secretary
+./setup_conda_env.sh
+conda activate esta
+ollama pull mistral
+jupyter notebook
+```
+
+### Option B: Virtual Environment (Python 3.11-3.12 only)
 
 ### Windows
 
@@ -57,7 +90,7 @@ jupyter notebook
 ## System Requirements
 
 **Required:**
-- Python 3.8+
+- Python 3.11 or 3.12 (TTS does NOT support 3.13+)
 - 8GB+ RAM
 - 10GB free disk space
 
@@ -70,9 +103,11 @@ jupyter notebook
 
 ```
 workers/secretary/
-├── esta/                          # Virtual environment (created by setup script)
-├── setup_local_env.bat            # One-command setup (Windows)
-├── setup_local_env.sh             # One-command setup (Linux/Mac)
+├── esta/                          # Environment folder (venv or conda)
+├── setup_conda_env.bat            # Conda setup with Python 3.11 (Windows) - RECOMMENDED
+├── setup_conda_env.sh             # Conda setup with Python 3.11 (Linux/Mac) - RECOMMENDED
+├── setup_local_env.bat            # venv setup (Windows, requires Python 3.11-3.12)
+├── setup_local_env.sh             # venv setup (Linux/Mac, requires Python 3.11-3.12)
 ├── test_secretary_local.ipynb     # Interactive testing notebook
 ├── secretary.py                   # Main orchestrator
 ├── tool_registry.py               # Worker registry
@@ -128,12 +163,17 @@ ollama pull mistral
 
 ### "Not in esta"
 
-**Windows:**
+**Conda (Recommended):**
+```bash
+conda activate esta
+```
+
+**venv - Windows:**
 ```cmd
 esta\Scripts\activate.bat
 ```
 
-**Linux/Mac:**
+**venv - Linux/Mac:**
 ```bash
 source esta/bin/activate
 ```
@@ -146,6 +186,12 @@ Install TTS and Whisper:
 ```bash
 pip install TTS openai-whisper
 ```
+
+### Python 3.13+ Installation Error
+If you see `ERROR: No matching distribution found for TTS`:
+- TTS requires Python 3.11 or 3.12
+- **Solution:** Use `setup_conda_env.bat` or `setup_conda_env.sh` to create an environment with Python 3.11
+- Or manually install Python 3.11/3.12 and use that instead
 
 ### GPU not detected but you have one
 

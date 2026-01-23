@@ -20,6 +20,29 @@ if %errorlevel% neq 0 (
 echo [OK] Python found
 python --version
 
+REM Check Python version (need 3.11 or 3.12 for TTS)
+for /f "tokens=2" %%i in ('python --version') do set PYTHON_VERSION=%%i
+for /f "tokens=1,2 delims=." %%a in ("%PYTHON_VERSION%") do (
+    set PYTHON_MAJOR=%%a
+    set PYTHON_MINOR=%%b
+)
+
+if %PYTHON_MAJOR% GEQ 3 if %PYTHON_MINOR% GEQ 13 (
+    echo.
+    echo [WARNING] Python 3.13+ detected!
+    echo TTS library requires Python 3.11 or 3.12.
+    echo.
+    echo RECOMMENDED: Use setup_conda_env.bat instead
+    echo This will create an environment with Python 3.11.
+    echo.
+    set /p continue="Continue anyway? (y/n): "
+    if /i not "%continue%"=="y" (
+        echo Setup cancelled.
+        pause
+        exit /b 0
+    )
+)
+
 REM Check if esta exists
 if exist "esta\" (
     echo.
