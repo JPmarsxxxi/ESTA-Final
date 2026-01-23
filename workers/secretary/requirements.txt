@@ -1,0 +1,13 @@
+# Secretary Module Requirements
+
+# Core dependencies
+ipywidgets>=8.0.0          # For interactive notebook forms
+ipython>=8.0.0             # For Jupyter/Colab support
+
+# Testing
+pytest>=7.0.0              # Testing framework (alternative to unittest)
+pytest-cov>=4.0.0          # Coverage reporting
+
+# Optional but recommended
+jupyter>=1.0.0             # For running notebooks locally
+notebook>=6.4.0            # Jupyter notebook server
