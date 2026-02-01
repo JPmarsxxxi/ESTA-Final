@@ -39,6 +39,22 @@ except ImportError as e:
     REAL_LANGSEARCH_AVAILABLE = False
     logger.warning(f"⚠️  Real LangSearch not available: {e}")
 
+try:
+    from asset_collector import AssetCollector as RealAssetCollector
+    REAL_ASSETCOLLECTOR_AVAILABLE = True
+    logger.info("✅ Real AssetCollector imported successfully")
+except ImportError as e:
+    REAL_ASSETCOLLECTOR_AVAILABLE = False
+    logger.warning(f"⚠️  Real AssetCollector not available: {e}")
+
+try:
+    from brainbox import BrainBox as RealBrainBox
+    REAL_BRAINBOX_AVAILABLE = True
+    logger.info("✅ Real BrainBox imported successfully")
+except ImportError as e:
+    REAL_BRAINBOX_AVAILABLE = False
+    logger.warning(f"⚠️  Real BrainBox not available: {e}")
+
 
 # Tool Registry - Defines all available workers and their specifications
 AVAILABLE_TOOLS = {
@@ -473,8 +489,8 @@ class WorkerFactory:
                 "scriptwriter": RealScriptWriter if REAL_SCRIPTWRITER_AVAILABLE else MockScriptWriter,
                 "audio_agent": RealAudioAgent if REAL_AUDIOAGENT_AVAILABLE else MockAudioAgent,
                 "langsearch": RealLangSearch if REAL_LANGSEARCH_AVAILABLE else MockLangSearch,
-                "brainbox": MockBrainBox,
-                "asset_collector": MockAssetCollector,
+                "brainbox": RealBrainBox if REAL_BRAINBOX_AVAILABLE else MockBrainBox,
+                "asset_collector": RealAssetCollector if REAL_ASSETCOLLECTOR_AVAILABLE else MockAssetCollector,
                 "executor": MockExecutor
             }
 
@@ -487,7 +503,9 @@ class WorkerFactory:
             is_real = (
                 (tool_name == "scriptwriter" and REAL_SCRIPTWRITER_AVAILABLE) or
                 (tool_name == "audio_agent" and REAL_AUDIOAGENT_AVAILABLE) or
-                (tool_name == "langsearch" and REAL_LANGSEARCH_AVAILABLE)
+                (tool_name == "langsearch" and REAL_LANGSEARCH_AVAILABLE) or
+                (tool_name == "asset_collector" and REAL_ASSETCOLLECTOR_AVAILABLE) or
+                (tool_name == "brainbox" and REAL_BRAINBOX_AVAILABLE)
             )
             worker_type = "REAL" if is_real else "MOCK"
             logger.info(f"Created new worker instance: {tool_name} ({worker_type})")
