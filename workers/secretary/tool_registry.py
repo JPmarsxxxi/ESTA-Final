@@ -31,6 +31,14 @@ except ImportError as e:
     REAL_AUDIOAGENT_AVAILABLE = False
     logger.warning(f"⚠️  Real AudioAgent not available: {e}")
 
+try:
+    from langsearch import LangSearch as RealLangSearch
+    REAL_LANGSEARCH_AVAILABLE = True
+    logger.info("✅ Real LangSearch imported successfully")
+except ImportError as e:
+    REAL_LANGSEARCH_AVAILABLE = False
+    logger.warning(f"⚠️  Real LangSearch not available: {e}")
+
 
 # Tool Registry - Defines all available workers and their specifications
 AVAILABLE_TOOLS = {
@@ -49,9 +57,9 @@ AVAILABLE_TOOLS = {
         "execution_time": "20-40 seconds"
     },
     "langsearch": {
-        "description": "Researches script terms and gathers contextual information",
-        "required_inputs": ["script"],
-        "optional_inputs": [],
+        "description": "Researches terms via web search. Script mode extracts and researches key terms; direct mode searches a specific query",
+        "required_inputs": [],
+        "optional_inputs": ["script", "query"],
         "outputs": ["research_data.json"],
         "execution_time": "10-30 seconds"
     },
@@ -464,7 +472,7 @@ class WorkerFactory:
             worker_map = {
                 "scriptwriter": RealScriptWriter if REAL_SCRIPTWRITER_AVAILABLE else MockScriptWriter,
                 "audio_agent": RealAudioAgent if REAL_AUDIOAGENT_AVAILABLE else MockAudioAgent,
-                "langsearch": MockLangSearch,
+                "langsearch": RealLangSearch if REAL_LANGSEARCH_AVAILABLE else MockLangSearch,
                 "brainbox": MockBrainBox,
                 "asset_collector": MockAssetCollector,
                 "executor": MockExecutor
@@ -478,7 +486,8 @@ class WorkerFactory:
             # Determine worker type
             is_real = (
                 (tool_name == "scriptwriter" and REAL_SCRIPTWRITER_AVAILABLE) or
-                (tool_name == "audio_agent" and REAL_AUDIOAGENT_AVAILABLE)
+                (tool_name == "audio_agent" and REAL_AUDIOAGENT_AVAILABLE) or
+                (tool_name == "langsearch" and REAL_LANGSEARCH_AVAILABLE)
             )
             worker_type = "REAL" if is_real else "MOCK"
             logger.info(f"Created new worker instance: {tool_name} ({worker_type})")
