@@ -1,0 +1,2 @@
+# Jupyter notebooks must stay LF — CRLF breaks the JSON parser
+*.ipynb eol=lf
