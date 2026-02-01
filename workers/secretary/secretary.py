@@ -554,7 +554,9 @@ class Secretary:
             elif tool_name == "audio_agent":
                 result = worker.generate_audio(inputs.get('script', ''))
             elif tool_name == "langsearch":
-                result = worker.research_terms(inputs.get('script', ''))
+                # Direct query mode if 'query' provided, otherwise script mode
+                input_text = inputs.get('query') or inputs.get('script', '')
+                result = worker.research_terms(input_text)
             elif tool_name == "brainbox":
                 result = worker.create_video_plan(
                     inputs.get('script', ''),

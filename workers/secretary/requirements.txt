@@ -8,6 +8,11 @@ ipython>=8.0.0             # For Jupyter/Colab support
 pytest>=7.0.0              # Testing framework (alternative to unittest)
 pytest-cov>=4.0.0          # Coverage reporting
 
+# AssetCollector dependencies
+yt-dlp>=2024.1.1           # YouTube search and download
+scenedetect[cli]>=0.6.2    # Shot boundary detection (brings in opencv-python)
+opencv-python>=4.8.0       # Visual analysis and heuristic classification
+
 # Optional but recommended
 jupyter>=1.0.0             # For running notebooks locally
 notebook>=6.4.0            # Jupyter notebook server

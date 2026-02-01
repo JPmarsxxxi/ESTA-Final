@@ -39,16 +39,18 @@ class AudioAgent:
 
     def __init__(
         self,
-        output_dir: str = "/content/audio_outputs",
+        output_dir: str = None,
         use_gpu: bool = True
     ):
         """
         Initialize AudioAgent
 
         Args:
-            output_dir: Directory for audio output files
+            output_dir: Directory for audio output files (defaults to audio_outputs/ next to this script)
             use_gpu: Use GPU for TTS if available
         """
+        if output_dir is None:
+            output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "audio_outputs")
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.use_gpu = use_gpu
